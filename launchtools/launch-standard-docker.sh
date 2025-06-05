@@ -30,7 +30,7 @@ docker run -it \
     -v "$PWD/Models:/SwarmUI/Models" \
     -v "$PWD/Output:/SwarmUI/Output" \
     -v "$PWD/src/BuiltinExtensions/ComfyUIBackend/CustomWorkflows:/SwarmUI/src/BuiltinExtensions/ComfyUIBackend/CustomWorkflows" \
-    --gpus=all -p 7801:7801 swarmui $POSTARG
+    --gpus=all -p 7801:7801 -p 7821:7821 -p 7822:7822 -p 7823:7823 -p 7824:7824  swarmui $POSTARG
 
 if [ $? == 42 ]; then
     exec "$SCRIPT_DIR/launch-standard-docker.sh" $@
