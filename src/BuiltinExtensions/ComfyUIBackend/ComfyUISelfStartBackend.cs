@@ -1,5 +1,4 @@
-﻿
-using FreneticUtilities.FreneticDataSyntax;
+﻿using FreneticUtilities.FreneticDataSyntax;
 using FreneticUtilities.FreneticExtensions;
 using FreneticUtilities.FreneticToolkit;
 using SwarmUI.Backends;
@@ -282,7 +281,7 @@ public class ComfyUISelfStartBackend : ComfyUIAPIAbstractBackend
         return Process.Start(start);
     }
 
-    public static string SwarmValidatedFrontendVersion = "1.21.6";
+    public static string SwarmValidatedFrontendVersion = "1.21.4";
 
     public override async Task Init()
     {
@@ -463,13 +462,11 @@ public class ComfyUISelfStartBackend : ComfyUIAPIAbstractBackend
             {
                 Logs.Warning($"(Developer Notice) ComfyUI Frontend target version is {frontVers}, but validated version is {SwarmValidatedFrontendVersion}");
             }
-            string actualTemplateVers = getVers("comfyui_workflow_templates");
-            if ((doFixFrontend || doLatestFrontend) && reqs.TryGetValue("comfyui-workflow-templates", out Version templateVers) && (actualTemplateVers is null || templateVers < Version.Parse(actualTemplateVers)))
+            if ((doFixFrontend || doLatestFrontend) && reqs.TryGetValue("comfyui-workflow-templates", out Version templateVers))
             {
                 await update("comfyui_workflow_templates", $"comfyui-workflow-templates=={templateVers}");
             }
-            string actualEmbedVers = getVers("comfyui_embedded_docs");
-            if ((doFixFrontend || doLatestFrontend) && reqs.TryGetValue("comfyui-embedded-docs", out Version embedDocsVers) && (actualEmbedVers is null || embedDocsVers < Version.Parse(actualEmbedVers)))
+            if ((doFixFrontend || doLatestFrontend) && reqs.TryGetValue("comfyui-embedded-docs", out Version embedDocsVers))
             {
                 await update("comfyui_embedded_docs", $"comfyui-embedded-docs=={embedDocsVers}");
             }
@@ -489,7 +486,7 @@ public class ComfyUISelfStartBackend : ComfyUIAPIAbstractBackend
             if (Directory.Exists($"{ComfyUIBackendExtension.Folder}/DLNodes/ComfyUI_IPAdapter_plus"))
             {
                 // FaceID IPAdapter models need these, really inconvenient to make dependencies conditional, so...
-                await install("cython", "cython");
+                await install("Cython", "cython");
                 if (File.Exists($"{lib}/../../python311.dll"))
                 {
                     // TODO: This is deeply cursed. This is published by the comfyui-ReActor-node developer so at least it's not a complete rando, but, jeesh. Insightface please fix your pip package.
@@ -557,7 +554,7 @@ public class ComfyUISelfStartBackend : ComfyUIAPIAbstractBackend
             AddLoadStatus("Done validating required libs.");
         }
         AddLoadStatus("Starting self-start ComfyUI process...");
-        await NetworkBackendUtils.DoSelfStart(Settings.StartScript, this, $"ComfyUI-{BackendData.ID}", $"backend-{BackendData.ID}", Settings.GPU_ID, Settings.ExtraArgs.Trim() + " --port {PORT}" + addedArgs, InitInternal, (p, r) => { Port = p; RunningProcess = r; }, Settings.AutoRestart);
+        await NetworkBackendUtils.DoSelfStart(Settings.StartScript, this, $"ComfyUI-{BackendData.ID}", $"backend-{BackendData.ID}", Settings.GPU_ID, Settings.ExtraArgs.Trim() + " --listen 0.0.0.0 --port {PORT}" + addedArgs, InitInternal, (p, r) => { Port = p; RunningProcess = r; }, Settings.AutoRestart);
     }
 
     /// <summary>Strict matcher that will block any muckery, excluding URLs and etc.</summary>

@@ -23,6 +23,7 @@ docker run -it \
     --rm \
     $SETUSER \
     --name swarmui \
+    --network comfy-net \
     --mount source=swarmdata,target=/SwarmUI/Data \
     --mount source=swarmbackend,target=/SwarmUI/dlbackend \
     --mount source=swarmdlnodes,target=/SwarmUI/src/BuiltinExtensions/ComfyUIBackend/DLNodes \
